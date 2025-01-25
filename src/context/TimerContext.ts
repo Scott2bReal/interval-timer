@@ -1,8 +1,8 @@
 import { createContext } from 'solid-js'
-import { TimerStore } from '../stores/createTimerStore'
+import { Timer } from '../stores/createTimerStore'
 
 interface TimerContextType {
-  timer: TimerStore
+  timer: Timer
 }
 
 export const TimerContext = createContext<TimerContextType>()

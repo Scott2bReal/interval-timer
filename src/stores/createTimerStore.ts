@@ -1,7 +1,20 @@
 import { createEffect } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-export type TimerStore = ReturnType<typeof createTimerStore>
+export type Timer = ReturnType<typeof createTimerStore>
+
+type TimerStore = {
+  phase: Phase
+  timeLeft: number
+  currentSet: number
+  currentCycle: number
+  isRunning: boolean
+  totalSets: number
+  cyclesPerSet: number
+  onDuration: number
+  offDuration: number
+  restDuration: number
+}
 
 export type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
 
@@ -24,7 +37,7 @@ export function createTimerStore(
     initialPhase: 'getReady',
   }
 ) {
-  const [state, setState] = createStore({
+  const [state, setState] = createStore<TimerStore>({
     phase: 'getReady',
     timeLeft: 5,
     currentSet: 1,
