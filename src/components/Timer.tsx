@@ -1,6 +1,87 @@
-import { createEffect, createSignal } from 'solid-js'
+import { TimerProvider, useTimer } from '../context/TimerProvider'
 
-type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
+const TimerControls = () => {
+  const { timer } = useTimer()
+  return (
+    <div class="mb-8 mt-12 grid grid-cols-2 gap-4">
+      <h2 class="col-span-2 text-2xl">Controls</h2>
+      <div>
+        <label for="sets" class="block text-sm font-medium text-stone-100">
+          Total Sets
+        </label>
+        <input
+          id="sets"
+          type="number"
+          min="1"
+          value={timer.state.totalSets}
+          onInput={(e) => timer.setTotalSets(Number(e.currentTarget.value))}
+          class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
+        />
+      </div>
+      <div>
+        <label for="cycles" class="block text-sm font-medium text-stone-100">
+          Cycles per Set
+        </label>
+        <input
+          id="cycles"
+          type="number"
+          min="1"
+          value={timer.state.cyclesPerSet}
+          onInput={(e) => timer.setCyclesPerSet(Number(e.currentTarget.value))}
+          class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
+        />
+      </div>
+      <div>
+        <label
+          for="onDuration"
+          class="block text-sm font-medium text-stone-100"
+        >
+          On Duration (s)
+        </label>
+        <input
+          id="onDuration"
+          type="number"
+          min="1"
+          value={timer.state.onDuration}
+          onInput={(e) => timer.setOnDuration(Number(e.currentTarget.value))}
+          class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
+        />
+      </div>
+      <div>
+        <label
+          for="offDuration"
+          class="block text-sm font-medium text-stone-100"
+        >
+          Off Duration (s)
+        </label>
+        <input
+          id="offDuration"
+          type="number"
+          min="1"
+          value={timer.state.offDuration}
+          onInput={(e) => timer.setOffDuration(Number(e.currentTarget.value))}
+          class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
+        />
+      </div>
+      <div>
+        <label
+          for="restDuration"
+          class="block text-sm font-medium text-stone-100"
+        >
+          Rest Duration (s)
+        </label>
+        <input
+          id="restDuration"
+          type="number"
+          min="1"
+          value={timer.state.restDuration}
+          onInput={(e) => timer.setRestDuration(Number(e.currentTarget.value))}
+          class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
+        />
+      </div>
+    </div>
+  )
+}
 
 const displayTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60)
@@ -8,209 +89,92 @@ const displayTime = (seconds: number) => {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
 }
 
-const Timer = () => {
-  const [phase, setPhase] = createSignal<Phase>('getReady')
-  const [timeLeft, setTimeLeft] = createSignal(5)
-  const [currentSet, setCurrentSet] = createSignal(1)
-  const [currentCycle, setCurrentCycle] = createSignal(1)
-  const [isRunning, setIsRunning] = createSignal(false)
-  const [totalSets, setTotalSets] = createSignal(4)
-  const [cyclesPerSet, setCyclesPerSet] = createSignal(4)
-  const [onDuration, setOnDuration] = createSignal(6)
-  const [offDuration, setOffDuration] = createSignal(6)
-  const [restDuration, setRestDuration] = createSignal(120)
-
-  let timer: number | null = null
-
-  // Helper function to clear the timer interval
-  const clearTimer = () => {
-    if (timer) {
-      clearInterval(timer)
-      timer = null
-    }
-  }
-
-  // Effect to handle the timer ticking
-  createEffect(() => {
-    if (!isRunning()) return
-
-    clearTimer() // Clear any existing interval before starting a new one
-    timer = setInterval(() => {
-      setTimeLeft((prev) => prev - 1)
-    }, 1000)
-
-    return () => clearTimer()
-  })
-
-  // Effect to handle phase transitions
-  createEffect(() => {
-    if (timeLeft() > 0 || !isRunning()) return
-
-    switch (phase()) {
-      case 'getReady':
-        setPhase('on')
-        setTimeLeft(onDuration())
-        break
-      case 'on':
-        if (currentCycle() < cyclesPerSet()) {
-          setPhase('off')
-          setTimeLeft(offDuration())
-        } else if (currentSet() < totalSets()) {
-          setPhase('rest')
-          setTimeLeft(restDuration())
-        } else {
-          setPhase('complete')
-          setIsRunning(false) // Stop timer
-        }
-        break
-      case 'off':
-        setPhase('on')
-        setTimeLeft(onDuration())
-        setCurrentCycle((prev) => prev + 1)
-        break
-      case 'rest':
-        setPhase('on')
-        setTimeLeft(onDuration())
-        setCurrentSet((prev) => prev + 1)
-        setCurrentCycle(1)
-        break
-      case 'complete':
-        setIsRunning(false)
-        break
-    }
-  })
-
-  const handleStartPause = () => {
-    setIsRunning((prev) => !prev)
-  }
-
-  const handleReset = () => {
-    clearTimer() // Clear the interval to prevent multiple timers
-    setIsRunning(false)
-    setPhase('getReady')
-    setTimeLeft(5)
-    setCurrentSet(1)
-    setCurrentCycle(1)
-  }
-
+const TimeDisplay = () => {
+  const { timer } = useTimer()
   return (
-    <div class="mx-auto max-w-md rounded bg-stone-900 p-6 text-center text-stone-100 shadow-lg">
-      {phase() !== 'complete' ? (
-        <div class="my-6">
-          <p class="text-xl">
-            Phase:{' '}
-            <span class="font-medium text-blue-400">
-              {phase().toUpperCase()}
-            </span>
-          </p>
-          <p class="text-lg">
-            Set: <span class="font-medium">{currentSet()}</span> / {totalSets()}
-          </p>
-          <p class="text-lg">
-            Cycle: <span class="font-medium">{currentCycle()}</span> /{' '}
-            {cyclesPerSet()}
-          </p>
-          <p class="mt-6 text-5xl font-bold">{displayTime(timeLeft())}</p>
-        </div>
-      ) : (
-        <div class="mt-6">
-          <h2 class="text-2xl font-semibold text-green-400">
-            Workout Complete! 🎉
-          </h2>
-        </div>
-      )}
-      <div class="mt-6 flex justify-center space-x-4">
-        <button
-          onClick={handleStartPause}
-          class="rounded bg-blue-500 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-        >
-          {isRunning() ? 'Pause' : 'Start'}
-        </button>
-        <button
-          onClick={handleReset}
-          class="rounded bg-stone-700 px-6 py-2 font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500"
-        >
-          Reset
-        </button>
+    <p class="mt-6 text-5xl font-bold">{displayTime(timer.state.timeLeft)}</p>
+  )
+}
+
+const StartPauseButton = () => {
+  const { timer } = useTimer()
+  return (
+    <button
+      onClick={timer.startPause}
+      class="rounded bg-blue-500 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      {timer.state.isRunning ? 'Pause' : 'Start'}
+    </button>
+  )
+}
+
+const ResetButton = () => {
+  const { timer } = useTimer()
+  return (
+    <button
+      onClick={timer.reset}
+      class="rounded bg-stone-700 px-6 py-2 font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500"
+    >
+      Reset
+    </button>
+  )
+}
+
+const SetDisplay = () => {
+  const { timer } = useTimer()
+  return (
+    <p class="mt-6 text-2xl">
+      Set: {timer.state.currentSet} / {timer.state.totalSets}
+    </p>
+  )
+}
+
+const CycleDisplay = () => {
+  const { timer } = useTimer()
+  return (
+    <p class="mt-6 text-2xl">
+      Cycle: {timer.state.currentCycle} / {timer.state.cyclesPerSet}
+    </p>
+  )
+}
+
+const PhaseDisplay = () => {
+  const { timer } = useTimer()
+  return timer.state.phase !== 'complete' ? (
+    <div class="my-6">
+      <div class="">
+        <h1 class="text-sm italic">Phase</h1>
+        <p class="text-6xl">
+          <span class="font-medium text-blue-400">
+            {timer.state.phase.toUpperCase()}
+          </span>
+        </p>
       </div>
-      <div class="mb-8 mt-12 grid grid-cols-2 gap-4">
-        <h2 class="col-span-2 text-2xl">Controls</h2>
-        <div>
-          <label for="sets" class="block text-sm font-medium text-stone-100">
-            Total Sets
-          </label>
-          <input
-            id="sets"
-            type="number"
-            min="1"
-            value={totalSets()}
-            onInput={(e) => setTotalSets(Number(e.currentTarget.value))}
-            class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
-          />
-        </div>
-        <div>
-          <label for="cycles" class="block text-sm font-medium text-stone-100">
-            Cycles per Set
-          </label>
-          <input
-            id="cycles"
-            type="number"
-            min="1"
-            value={cyclesPerSet()}
-            onInput={(e) => setCyclesPerSet(Number(e.currentTarget.value))}
-            class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
-          />
-        </div>
-        <div>
-          <label
-            for="onDuration"
-            class="block text-sm font-medium text-stone-100"
-          >
-            On Duration (s)
-          </label>
-          <input
-            id="onDuration"
-            type="number"
-            min="1"
-            value={onDuration()}
-            onInput={(e) => setOnDuration(Number(e.currentTarget.value))}
-            class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
-          />
-        </div>
-        <div>
-          <label
-            for="offDuration"
-            class="block text-sm font-medium text-stone-100"
-          >
-            Off Duration (s)
-          </label>
-          <input
-            id="offDuration"
-            type="number"
-            min="1"
-            value={offDuration()}
-            onInput={(e) => setOffDuration(Number(e.currentTarget.value))}
-            class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
-          />
-        </div>
-        <div>
-          <label
-            for="restDuration"
-            class="block text-sm font-medium text-stone-100"
-          >
-            Rest Duration (s)
-          </label>
-          <input
-            id="restDuration"
-            type="number"
-            min="1"
-            value={restDuration()}
-            onInput={(e) => setRestDuration(Number(e.currentTarget.value))}
-            class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
-          />
-        </div>
-      </div>
+      <SetDisplay />
+      <CycleDisplay />
+      <TimeDisplay />
     </div>
+  ) : (
+    <div class="mt-6">
+      <h2 class="text-2xl font-semibold text-green-400">
+        Workout Complete! 🎉
+      </h2>
+    </div>
+  )
+}
+
+const Timer = () => {
+  return (
+    <TimerProvider>
+      <div class="mx-auto max-w-md rounded bg-stone-900 p-6 text-center text-stone-100 shadow-lg">
+        <PhaseDisplay />
+        <div class="mt-6 flex justify-center space-x-4">
+          <StartPauseButton />
+          <ResetButton />
+        </div>
+        <TimerControls />
+      </div>
+    </TimerProvider>
   )
 }
 
