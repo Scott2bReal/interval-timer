@@ -20,15 +20,26 @@ const Timer = () => {
   const [offDuration, setOffDuration] = createSignal(6)
   const [restDuration, setRestDuration] = createSignal(120)
 
+  let timer: number | null = null
+
+  // Helper function to clear the timer interval
+  const clearTimer = () => {
+    if (timer) {
+      clearInterval(timer)
+      timer = null
+    }
+  }
+
   // Effect to handle the timer ticking
   createEffect(() => {
     if (!isRunning()) return
 
-    const timer = setInterval(() => {
+    clearTimer() // Clear any existing interval before starting a new one
+    timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1)
     }, 1000)
 
-    return () => clearInterval(timer)
+    return () => clearTimer()
   })
 
   // Effect to handle phase transitions
@@ -74,6 +85,7 @@ const Timer = () => {
   }
 
   const handleReset = () => {
+    clearTimer() // Clear the interval to prevent multiple timers
     setIsRunning(false)
     setPhase('getReady')
     setTimeLeft(5)
