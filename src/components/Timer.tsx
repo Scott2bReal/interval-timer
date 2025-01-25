@@ -2,23 +2,23 @@ import { createEffect, createSignal } from 'solid-js'
 
 type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
 
-const [phase, setPhase] = createSignal<Phase>('getReady')
-const [timeLeft, setTimeLeft] = createSignal(5)
-const [currentSet, setCurrentSet] = createSignal(1)
-const [currentCycle, setCurrentCycle] = createSignal(1)
-const [isRunning, setIsRunning] = createSignal(false)
-const [totalSets, setTotalSets] = createSignal(4)
-const [cyclesPerSet, setCyclesPerSet] = createSignal(4)
-const [onDuration, setOnDuration] = createSignal(6)
-const [offDuration, setOffDuration] = createSignal(6)
-const [restDuration, setRestDuration] = createSignal(120)
+const displayTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
+}
 
 const Timer = () => {
-  const displayTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
-  }
+  const [phase, setPhase] = createSignal<Phase>('getReady')
+  const [timeLeft, setTimeLeft] = createSignal(5)
+  const [currentSet, setCurrentSet] = createSignal(1)
+  const [currentCycle, setCurrentCycle] = createSignal(1)
+  const [isRunning, setIsRunning] = createSignal(false)
+  const [totalSets, setTotalSets] = createSignal(4)
+  const [cyclesPerSet, setCyclesPerSet] = createSignal(4)
+  const [onDuration, setOnDuration] = createSignal(6)
+  const [offDuration, setOffDuration] = createSignal(6)
+  const [restDuration, setRestDuration] = createSignal(120)
 
   // Effect to handle the timer ticking
   createEffect(() => {
