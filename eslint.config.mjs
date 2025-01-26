@@ -14,6 +14,9 @@ const solidConfig = [
 
 /** @type {import("eslint").Linter.Config} */
 export default tseslint.config(
+  {
+    ignores: ['dist/**'],
+  },
   eslint.configs.recommended,
   tseslint.configs.recommended,
   ...solidConfig,
