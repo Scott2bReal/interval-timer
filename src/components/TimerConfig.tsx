@@ -2,6 +2,10 @@ import { HiOutlineEye, HiOutlineEyeSlash } from 'solid-icons/hi'
 import { createSignal, Show } from 'solid-js'
 import { useTimer } from '../context/TimerProvider'
 
+const showHideConfigMessage = (showConfig: boolean) => {
+  return showConfig ? 'Hide config panel' : 'Show config panel'
+}
+
 export const TimerConfig = () => {
   const [showConfig, setShowConfig] = createSignal(false)
   const { timer } = useTimer()
@@ -9,7 +13,11 @@ export const TimerConfig = () => {
     <>
       <div class="mx-auto mt-8 flex w-full items-center justify-center gap-2 text-center">
         <h2 class="text-2xl">Configuration</h2>
-        <button onClick={() => setShowConfig(!showConfig())}>
+        <button
+          title={showHideConfigMessage(showConfig())}
+          onClick={() => setShowConfig(!showConfig())}
+        >
+          <span class="sr-only">{showHideConfigMessage(showConfig())}</span>
           <Show when={showConfig()} fallback={<HiOutlineEye class="size-6" />}>
             <HiOutlineEyeSlash class="size-6" />
           </Show>

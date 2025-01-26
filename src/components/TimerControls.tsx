@@ -6,6 +6,7 @@ const StartPauseButton = () => {
   const { timer } = useTimer()
   return (
     <button
+      title={timer.state.isRunning ? 'Pause' : 'Start'}
       onClick={timer.controls.startPause}
       class="rounded bg-blue-500 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
     >
@@ -18,6 +19,7 @@ const ResetButton = () => {
   const { timer } = useTimer()
   return (
     <button
+      title="Reset"
       onClick={timer.controls.reset}
       class="rounded bg-stone-700 px-6 py-2 font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500"
     >
@@ -30,9 +32,11 @@ const ToggleMuteButton = () => {
   const { timer } = useTimer()
   return (
     <button
+      title={timer.state.isMuted ? 'Unmute' : 'Mute'}
       onClick={timer.controls.toggleMuted}
       class="rounded bg-stone-700 px-6 py-2 font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500"
     >
+      <span class="sr-only">{timer.state.isMuted ? 'Unmute' : 'Mute'}</span>
       <Show
         when={timer.state.isMuted}
         fallback={<HiOutlineSpeakerWave class="size-6" />}
