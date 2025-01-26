@@ -1,3 +1,4 @@
+import { Show } from 'solid-js'
 import { useTimer } from '../context/TimerProvider'
 import { Phase } from '../stores/createTimerStore'
 
@@ -49,27 +50,32 @@ function getTextColor(phase: Phase) {
 
 export const PhaseDisplay = () => {
   const { timer } = useTimer()
-  return timer.state.currentPhase !== 'complete' ? (
-    <div class="my-6">
-      <div class="">
-        <h1 class="text-2xl italic">Phase</h1>
-        <p class="text-6xl">
-          <span class="font-medium">
-            <span class={getTextColor(timer.state.currentPhase)}>
-              {timer.state.currentPhase.toUpperCase()}
+  return (
+    <Show
+      when={timer.state.currentPhase !== 'complete'}
+      fallback={
+        <div class="mt-6">
+          <h2 class="text-2xl font-semibold text-green-400">
+            Workout Complete! 🎉
+          </h2>
+        </div>
+      }
+    >
+      <div class="my-6">
+        <div class="">
+          <h1 class="text-2xl italic">Phase</h1>
+          <p class="text-6xl">
+            <span class="font-medium">
+              <span class={getTextColor(timer.state.currentPhase)}>
+                {timer.state.currentPhase.toUpperCase()}
+              </span>
             </span>
-          </span>
-        </p>
+          </p>
+        </div>
+        <SetDisplay />
+        <CycleDisplay />
+        <TimeDisplay />
       </div>
-      <SetDisplay />
-      <CycleDisplay />
-      <TimeDisplay />
-    </div>
-  ) : (
-    <div class="mt-6">
-      <h2 class="text-2xl font-semibold text-green-400">
-        Workout Complete! 🎉
-      </h2>
-    </div>
+    </Show>
   )
 }
