@@ -3,23 +3,20 @@ import { createSignal, Show } from 'solid-js'
 import { useTimer } from '../context/TimerProvider'
 
 export const TimerConfig = () => {
-  const [showControls, setShowControls] = createSignal(false)
+  const [showConfig, setShowConfig] = createSignal(false)
   const { timer } = useTimer()
   return (
     <>
       <div class="mx-auto mt-8 flex w-full items-center justify-center gap-2 text-center">
-        <h2 class="text-2xl">Controls</h2>
-        <button onClick={() => setShowControls(!showControls())}>
-          <Show
-            when={showControls()}
-            fallback={<HiOutlineEye class="size-6" />}
-          >
+        <h2 class="text-2xl">Configuration</h2>
+        <button onClick={() => setShowConfig(!showConfig())}>
+          <Show when={showConfig()} fallback={<HiOutlineEye class="size-6" />}>
             <HiOutlineEyeSlash class="size-6" />
           </Show>
         </button>
       </div>
       <div class="mb-8 mt-12 grid grid-cols-2 gap-4">
-        <Show when={showControls()}>
+        <Show when={showConfig()}>
           <div>
             <label for="sets" class="block text-sm font-medium text-stone-100">
               Total Sets

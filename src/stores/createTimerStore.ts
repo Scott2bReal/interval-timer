@@ -1,5 +1,6 @@
 import { createEffect } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { beep } from '../utils/beep'
 
 export type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
 
@@ -11,6 +12,7 @@ interface TimerControls {
   setRestDuration: (value: number) => void
   startPause: () => void
   reset: () => void
+  toggleMuted: () => void
 }
 
 interface TimerState {
@@ -24,6 +26,7 @@ interface TimerState {
   onDuration: number
   offDuration: number
   restDuration: number
+  isMuted: boolean
 }
 
 export interface Timer {
@@ -61,6 +64,7 @@ export function createTimerStore(
     onDuration: initialConfig.onDuration,
     offDuration: initialConfig.offDuration,
     restDuration: initialConfig.restDuration,
+    isMuted: true,
   })
 
   let currentTime: number | null = null
@@ -145,6 +149,12 @@ export function createTimerStore(
     handlePhaseTransition()
   })
 
+  createEffect(() => {
+    if (state.timeLeft <= 3 && state.timeLeft > 0 && !state.isMuted) {
+      beep.play()
+    }
+  })
+
   return {
     state,
     controls: {
@@ -153,6 +163,7 @@ export function createTimerStore(
       setOnDuration: (value: number) => setState('onDuration', value),
       setOffDuration: (value: number) => setState('offDuration', value),
       setRestDuration: (value: number) => setState('restDuration', value),
+      toggleMuted: () => setState('isMuted', !state.isMuted),
       startPause,
       reset,
     },

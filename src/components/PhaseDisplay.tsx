@@ -26,7 +26,7 @@ const SetDisplay = () => {
 const CycleDisplay = () => {
   const { timer } = useTimer()
   return (
-    <p class="mt-6 text-2xl">
+    <p class="mt-2 text-2xl">
       Cycle: {timer.state.currentCycle} / {timer.state.cyclesPerSet}
     </p>
   )
@@ -52,7 +52,7 @@ export const PhaseDisplay = () => {
   return timer.state.currentPhase !== 'complete' ? (
     <div class="my-6">
       <div class="">
-        <h1 class="text-sm italic">Phase</h1>
+        <h1 class="text-2xl italic">Phase</h1>
         <p class="text-6xl">
           <span class="font-medium">
             <span class={getTextColor(timer.state.currentPhase)}>
