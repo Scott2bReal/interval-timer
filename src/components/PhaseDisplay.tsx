@@ -49,14 +49,14 @@ function getTextColor(phase: Phase) {
 
 export const PhaseDisplay = () => {
   const { timer } = useTimer()
-  return timer.state.phase !== 'complete' ? (
+  return timer.state.currentPhase !== 'complete' ? (
     <div class="my-6">
       <div class="">
         <h1 class="text-sm italic">Phase</h1>
         <p class="text-6xl">
           <span class="font-medium">
-            <span class={getTextColor(timer.state.phase)}>
-              {timer.state.phase.toUpperCase()}
+            <span class={getTextColor(timer.state.currentPhase)}>
+              {timer.state.currentPhase.toUpperCase()}
             </span>
           </span>
         </p>

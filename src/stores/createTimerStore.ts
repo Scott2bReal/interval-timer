@@ -14,7 +14,7 @@ interface TimerControls {
 }
 
 interface TimerState {
-  phase: Phase
+  currentPhase: Phase
   timeLeft: number
   currentSet: number
   currentCycle: number
@@ -51,7 +51,7 @@ export function createTimerStore(
   }
 ): Timer {
   const [state, setState] = createStore<TimerState>({
-    phase: 'getReady',
+    currentPhase: 'getReady',
     timeLeft: 5,
     currentSet: 1,
     currentCycle: 1,
@@ -86,29 +86,29 @@ export function createTimerStore(
   const handlePhaseTransition = () => {
     if (state.timeLeft > 0 || !state.isRunning) return
 
-    switch (state.phase) {
+    switch (state.currentPhase) {
       case 'getReady':
-        setState({ phase: 'on', timeLeft: state.onDuration })
+        setState({ currentPhase: 'on', timeLeft: state.onDuration })
         break
       case 'on':
         if (state.currentCycle < state.cyclesPerSet) {
-          setState({ phase: 'off', timeLeft: state.offDuration })
+          setState({ currentPhase: 'off', timeLeft: state.offDuration })
         } else if (state.currentSet < state.totalSets) {
-          setState({ phase: 'rest', timeLeft: state.restDuration })
+          setState({ currentPhase: 'rest', timeLeft: state.restDuration })
         } else {
-          setState({ phase: 'complete', isRunning: false })
+          setState({ currentPhase: 'complete', isRunning: false })
         }
         break
       case 'off':
         setState({
-          phase: 'on',
+          currentPhase: 'on',
           timeLeft: state.onDuration,
           currentCycle: state.currentCycle + 1,
         })
         break
       case 'rest':
         setState({
-          phase: 'on',
+          currentPhase: 'on',
           timeLeft: state.onDuration,
           currentSet: state.currentSet + 1,
           currentCycle: 1,
@@ -128,7 +128,7 @@ export function createTimerStore(
   const reset = () => {
     clearTimer()
     setState({
-      phase: 'getReady',
+      currentPhase: 'getReady',
       timeLeft: 5,
       currentSet: 1,
       currentCycle: 1,
