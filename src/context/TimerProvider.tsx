@@ -1,5 +1,5 @@
 import { JSXElement, useContext } from 'solid-js'
-import { createTimerStore, InitialConfig } from '../stores/createTimerStore'
+import { createTimerStore, TimerConfig } from '../stores/createTimerStore'
 import { TimerContext } from './TimerContext'
 
 export const useTimer = () => {
@@ -11,7 +11,7 @@ export const useTimer = () => {
 }
 
 interface TimerProviderProps {
-  initialConfig?: InitialConfig
+  initialConfig?: TimerConfig
   children: JSXElement
 }
 

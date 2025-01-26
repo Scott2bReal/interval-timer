@@ -34,7 +34,7 @@ export interface Timer {
   controls: TimerControls
 }
 
-export interface InitialConfig {
+export interface TimerConfig {
   totalSets: number
   cyclesPerSet: number
   onDuration: number
@@ -43,10 +43,11 @@ export interface InitialConfig {
   initialPhase: Phase
 }
 
+const LOCAL_STORAGE_KEY = 'timerConfig'
 const DEFAULT_BEEP_CONFIG: Parameters<typeof beep> = [200, 880, 100]
 
 export function createTimerStore(
-  initialConfig: InitialConfig = {
+  initialConfig: TimerConfig = {
     totalSets: 4,
     cyclesPerSet: 4,
     onDuration: 6,
@@ -55,17 +56,23 @@ export function createTimerStore(
     initialPhase: 'getReady',
   }
 ): Timer {
+  const savedConfig = JSON.parse(
+    localStorage.getItem(LOCAL_STORAGE_KEY) ?? 'null'
+  ) as TimerConfig | null
+
+  const config = savedConfig ?? initialConfig
+
   const [state, setState] = createStore<TimerState>({
     currentPhase: 'getReady',
     timeLeft: 5,
     currentSet: 1,
     currentCycle: 1,
     isRunning: false,
-    totalSets: initialConfig.totalSets,
-    cyclesPerSet: initialConfig.cyclesPerSet,
-    onDuration: initialConfig.onDuration,
-    offDuration: initialConfig.offDuration,
-    restDuration: initialConfig.restDuration,
+    totalSets: config.totalSets,
+    cyclesPerSet: config.cyclesPerSet,
+    onDuration: config.onDuration,
+    offDuration: config.offDuration,
+    restDuration: config.restDuration,
     isMuted: true,
   })
 
@@ -126,6 +133,18 @@ export function createTimerStore(
     }
   }
 
+  const saveConfigToLocalStorage = () => {
+    const configToSave: TimerConfig = {
+      totalSets: state.totalSets,
+      cyclesPerSet: state.cyclesPerSet,
+      onDuration: state.onDuration,
+      offDuration: state.offDuration,
+      restDuration: state.restDuration,
+      initialPhase: 'getReady',
+    }
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(configToSave))
+  }
+
   const startPause = () => {
     setState('isRunning', !state.isRunning)
     startTimer()
@@ -142,15 +161,23 @@ export function createTimerStore(
     })
   }
 
+  // Save configuration whenever relevant state changes
+  createEffect(() => {
+    saveConfigToLocalStorage()
+  })
+
+  // Start timer when isRunning is true
   createEffect(() => {
     if (state.isRunning) startTimer()
     return () => clearTimer()
   })
 
+  // Handle phase transitions when timeLeft reaches 0
   createEffect(() => {
     handlePhaseTransition()
   })
 
+  // Beep when approaching the end of a phase
   createEffect(() => {
     if (state.timeLeft <= 3 && state.timeLeft > 0 && !state.isMuted) {
       void beep(...DEFAULT_BEEP_CONFIG)
