@@ -43,6 +43,8 @@ export interface InitialConfig {
   initialPhase: Phase
 }
 
+const DEFAULT_BEEP_CONFIG: Parameters<typeof beep> = [200, 880, 100]
+
 export function createTimerStore(
   initialConfig: InitialConfig = {
     totalSets: 4,
@@ -151,7 +153,7 @@ export function createTimerStore(
 
   createEffect(() => {
     if (state.timeLeft <= 3 && state.timeLeft > 0 && !state.isMuted) {
-      beep.play()
+      void beep(...DEFAULT_BEEP_CONFIG)
     }
   })
 
