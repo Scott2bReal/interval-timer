@@ -6,7 +6,7 @@ const StartPauseButton = () => {
   const { timer } = useTimer()
   return (
     <button
-      onClick={timer.startPause}
+      onClick={timer.controls.startPause}
       class="rounded bg-blue-500 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
     >
       {timer.state.isRunning ? 'Pause' : 'Start'}
@@ -18,7 +18,7 @@ const ResetButton = () => {
   const { timer } = useTimer()
   return (
     <button
-      onClick={timer.reset}
+      onClick={timer.controls.reset}
       class="rounded bg-stone-700 px-6 py-2 font-medium text-white hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500"
     >
       Reset

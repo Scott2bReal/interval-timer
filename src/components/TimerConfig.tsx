@@ -29,7 +29,9 @@ export const TimerConfig = () => {
               type="number"
               min="1"
               value={timer.state.totalSets}
-              onInput={(e) => timer.setTotalSets(Number(e.currentTarget.value))}
+              onInput={(e) =>
+                timer.controls.setTotalSets(Number(e.currentTarget.value))
+              }
               class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
             />
           </div>
@@ -46,7 +48,7 @@ export const TimerConfig = () => {
               min="1"
               value={timer.state.cyclesPerSet}
               onInput={(e) =>
-                timer.setCyclesPerSet(Number(e.currentTarget.value))
+                timer.controls.setCyclesPerSet(Number(e.currentTarget.value))
               }
               class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
             />
@@ -64,7 +66,7 @@ export const TimerConfig = () => {
               min="1"
               value={timer.state.onDuration}
               onInput={(e) =>
-                timer.setOnDuration(Number(e.currentTarget.value))
+                timer.controls.setOnDuration(Number(e.currentTarget.value))
               }
               class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
             />
@@ -82,7 +84,7 @@ export const TimerConfig = () => {
               min="1"
               value={timer.state.offDuration}
               onInput={(e) =>
-                timer.setOffDuration(Number(e.currentTarget.value))
+                timer.controls.setOffDuration(Number(e.currentTarget.value))
               }
               class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
             />
@@ -100,7 +102,7 @@ export const TimerConfig = () => {
               min="1"
               value={timer.state.restDuration}
               onInput={(e) =>
-                timer.setRestDuration(Number(e.currentTarget.value))
+                timer.controls.setRestDuration(Number(e.currentTarget.value))
               }
               class="mt-1 block w-full rounded bg-stone-800 px-2 py-1 text-stone-100"
             />

@@ -1,9 +1,19 @@
 import { createEffect } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-export type Timer = ReturnType<typeof createTimerStore>
+export type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
 
-type TimerStore = {
+interface TimerControls {
+  setTotalSets: (value: number) => void
+  setCyclesPerSet: (value: number) => void
+  setOnDuration: (value: number) => void
+  setOffDuration: (value: number) => void
+  setRestDuration: (value: number) => void
+  startPause: () => void
+  reset: () => void
+}
+
+interface TimerState {
   phase: Phase
   timeLeft: number
   currentSet: number
@@ -16,7 +26,10 @@ type TimerStore = {
   restDuration: number
 }
 
-export type Phase = 'getReady' | 'on' | 'off' | 'rest' | 'complete'
+export interface Timer {
+  state: TimerState
+  controls: TimerControls
+}
 
 export interface InitialConfig {
   totalSets: number
@@ -36,8 +49,8 @@ export function createTimerStore(
     restDuration: 120,
     initialPhase: 'getReady',
   }
-) {
-  const [state, setState] = createStore<TimerStore>({
+): Timer {
+  const [state, setState] = createStore<TimerState>({
     phase: 'getReady',
     timeLeft: 5,
     currentSet: 1,
@@ -50,19 +63,19 @@ export function createTimerStore(
     restDuration: initialConfig.restDuration,
   })
 
-  let timer: number | null = null
+  let currentTime: number | null = null
 
   const clearTimer = () => {
-    if (timer) {
-      clearInterval(timer)
-      timer = null
+    if (currentTime) {
+      clearInterval(currentTime)
+      currentTime = null
     }
   }
 
   const startTimer = () => {
     if (state.isRunning) {
       clearTimer()
-      timer = setInterval(() => {
+      currentTime = setInterval(() => {
         setState('timeLeft', (prev) => prev - 1)
       }, 1000)
     } else {
@@ -134,12 +147,14 @@ export function createTimerStore(
 
   return {
     state,
-    setTotalSets: (value: number) => setState('totalSets', value),
-    setCyclesPerSet: (value: number) => setState('cyclesPerSet', value),
-    setOnDuration: (value: number) => setState('onDuration', value),
-    setOffDuration: (value: number) => setState('offDuration', value),
-    setRestDuration: (value: number) => setState('restDuration', value),
-    startPause,
-    reset,
+    controls: {
+      setTotalSets: (value: number) => setState('totalSets', value),
+      setCyclesPerSet: (value: number) => setState('cyclesPerSet', value),
+      setOnDuration: (value: number) => setState('onDuration', value),
+      setOffDuration: (value: number) => setState('offDuration', value),
+      setRestDuration: (value: number) => setState('restDuration', value),
+      startPause,
+      reset,
+    },
   }
 }
