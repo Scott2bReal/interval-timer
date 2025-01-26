@@ -8,7 +8,7 @@ const StartPauseButton = () => {
     <button
       title={timer.state.isRunning ? 'Pause' : 'Start'}
       onClick={timer.controls.startPause}
-      class="rounded bg-blue-500 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      class="rounded bg-blue-600 px-6 py-2 font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
     >
       {timer.state.isRunning ? 'Pause' : 'Start'}
     </button>
