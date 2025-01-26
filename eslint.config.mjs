@@ -1,11 +1,22 @@
 import eslint from '@eslint/js'
 import eslintPluginTailwindCss from 'eslint-plugin-tailwindcss'
 import tseslint from 'typescript-eslint'
+import vitePluginEslint from 'vite-plugin-eslint'
+
+import solid from 'eslint-plugin-solid/configs/typescript'
+
+const solidConfig = [
+  {
+    files: ['**/*.{ts,tsx}'],
+    ...solid,
+  },
+]
 
 /** @type {import("eslint").Linter.Config} */
 export default tseslint.config(
   eslint.configs.recommended,
-  tseslint.configs.strict,
+  tseslint.configs.recommended,
+  ...solidConfig,
   {
     languageOptions: {
       parserOptions: {
@@ -25,6 +36,7 @@ export default tseslint.config(
     },
     plugins: {
       tailwindcss: eslintPluginTailwindCss,
+      vite: vitePluginEslint(),
     },
   }
 )
