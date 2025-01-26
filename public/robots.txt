@@ -1,0 +1,5 @@
+# Allow all user agents
+User-agent: *
+
+# Allow the root and all other public paths
+Allow: /
