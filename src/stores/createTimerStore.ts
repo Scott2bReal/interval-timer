@@ -179,7 +179,10 @@ export function createTimerStore(
 
   // Beep when approaching the end of a phase
   createEffect(() => {
-    if (state.timeLeft <= 3 && state.timeLeft > 0 && !state.isMuted) {
+    // When going to set break, do a higher beep
+    if (state.currentPhase === 'rest') {
+      void beep(500, 440, 100)
+    } else if (state.timeLeft <= 3 && state.timeLeft > 0 && !state.isMuted) {
       void beep(...DEFAULT_BEEP_CONFIG)
     }
   })
