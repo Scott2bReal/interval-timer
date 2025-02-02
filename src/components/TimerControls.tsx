@@ -50,7 +50,7 @@ const ToggleMuteButton = () => {
 
 export const TimerControls = () => {
   return (
-    <div class="mt-6 flex items-center justify-between space-x-4">
+    <div class="mt-6 flex items-center justify-center space-x-4">
       <ResetButton />
       <StartPauseButton />
       <ToggleMuteButton />
