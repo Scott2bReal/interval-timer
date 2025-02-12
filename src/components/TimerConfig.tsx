@@ -11,18 +11,18 @@ export const TimerConfig = () => {
   const { timer } = useTimer()
   return (
     <>
-      <div class="mx-auto mt-8 flex w-full items-center justify-center gap-2 text-center">
-        <h2 class="text-2xl">Configuration</h2>
-        <button
-          title={showHideConfigMessage(showConfig())}
-          onClick={() => setShowConfig(!showConfig())}
-        >
-          <span class="sr-only">{showHideConfigMessage(showConfig())}</span>
-          <Show when={showConfig()} fallback={<HiOutlineEye class="size-6" />}>
-            <HiOutlineEyeSlash class="size-6" />
-          </Show>
-        </button>
-      </div>
+      <button
+        title={showHideConfigMessage(showConfig())}
+        onClick={() => setShowConfig(!showConfig())}
+        class="mx-auto mt-8 flex w-full items-center justify-center gap-2 text-center"
+      >
+        <Show when={showConfig()} fallback={<HiOutlineEye class="size-6" />}>
+          <HiOutlineEyeSlash class="size-6" />
+        </Show>
+        <p class="text-2xl">Configuration</p>
+        <span class="sr-only">{showHideConfigMessage(showConfig())}</span>
+      </button>
+
       <div class="mb-8 mt-12 grid grid-cols-2 gap-4">
         <Show when={showConfig()}>
           <div>
