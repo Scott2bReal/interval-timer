@@ -1,6 +1,21 @@
 import { createVisibilityObserver } from '@solid-primitives/intersection-observer'
+import { Accessor, Component, createContext, Show, useContext } from 'solid-js'
 import { useTimer } from '../context/TimerProvider'
 import { Phase } from '../stores/createTimerStore'
+
+interface ContextValue {
+  isPhaseVisible: Accessor<boolean>
+  isTimeVisible: Accessor<boolean>
+}
+const InfoDisplayContext = createContext<ContextValue>()
+const useInfoDisplayContext = () => {
+  const ctx = useContext(InfoDisplayContext)
+  if (!ctx)
+    throw new Error(
+      'InfoDisplayContext must be used within InfoDisplayProvider'
+    )
+  return ctx
+}
 
 const displayTime = (seconds: number) => {
   if (seconds <= 0) return '0:00'
@@ -9,10 +24,19 @@ const displayTime = (seconds: number) => {
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
 }
 
-const TimeDisplay = () => {
+interface TimeDisplayProps {
+  isSmall?: boolean
+  ref?: HTMLDivElement
+}
+const TimeDisplay: Component<TimeDisplayProps> = (props) => {
   const { timer } = useTimer()
   return (
-    <p class="mt-6 text-7xl font-bold">{displayTime(timer.state.timeLeft)}</p>
+    <p
+      ref={props.ref}
+      class={`${props.isSmall ? '' : 'mt-6 text-7xl'} font-bold`}
+    >
+      {displayTime(timer.state.timeLeft)}
+    </p>
   )
 }
 
@@ -49,48 +73,71 @@ function getTextColor(phase: Phase) {
   }
 }
 
-const useIsVisible = createVisibilityObserver({
+const SmallScreenInfoDisplay = () => {
+  const { timer } = useTimer()
+  const { isPhaseVisible, isTimeVisible } = useInfoDisplayContext()
+  return (
+    <div
+      data-show={isPhaseVisible()}
+      class="fixed left-0 top-0 flex w-full items-center justify-center gap-4 bg-stone-900 py-2 text-3xl transition-transform duration-300 data-[show=true]:-translate-y-full"
+    >
+      <span class={getTextColor(timer.state.currentPhase)}>
+        {timer.state.currentPhase.toUpperCase()}
+      </span>
+      <Show when={!isTimeVisible()}>
+        <TimeDisplay isSmall={true} />
+      </Show>
+    </div>
+  )
+}
+
+const useIsPhaseVisible = createVisibilityObserver({
   threshold: 0.5,
   initialValue: true,
 })
+const useIsTimeVisible = createVisibilityObserver({
+  threshold: 0.5,
+  // Height of the small screen info display
+  rootMargin: '-50px',
+  initialValue: true,
+})
 
-const PhaseDisplay = () => {
+interface PhaseDisplayProps {
+  ref?: HTMLDivElement
+}
+const PhaseDisplay: Component<PhaseDisplayProps> = (props) => {
   const { timer } = useTimer()
 
-  let el: HTMLDivElement | undefined
-  const isVisible = useIsVisible(() => el)
-
   return (
-    <>
-      <div
-        data-is-main-display-visible={isVisible()}
-        class="fixed left-0 top-0 w-full bg-stone-900 py-2 text-3xl transition-transform duration-300 data-[is-main-display-visible=true]:-translate-y-full"
-      >
-        <span class={getTextColor(timer.state.currentPhase)}>
-          {timer.state.currentPhase.toUpperCase()}
-        </span>
-      </div>
-      <div data-is-visible={isVisible()} ref={el}>
-        <h1 class="text-2xl italic">Phase</h1>
-        <p class="text-6xl">
-          <span class="font-medium">
-            <span class={getTextColor(timer.state.currentPhase)}>
-              {timer.state.currentPhase.toUpperCase()}
-            </span>
+    <div ref={props.ref}>
+      <h1 class="text-2xl italic">Phase</h1>
+      <p class="text-6xl">
+        <span class="font-medium">
+          <span class={getTextColor(timer.state.currentPhase)}>
+            {timer.state.currentPhase.toUpperCase()}
           </span>
-        </p>
-      </div>
-    </>
+        </span>
+      </p>
+    </div>
   )
 }
 
 export const InfoDisplay = () => {
+  let phaseRef: HTMLDivElement | undefined
+  const isPhaseVisible = useIsPhaseVisible(() => phaseRef)
+
+  let timeRef: HTMLDivElement | undefined
+  const isTimeVisible = useIsTimeVisible(() => timeRef)
+
   return (
-    <div class="my-6">
-      <PhaseDisplay />
-      <SetDisplay />
-      <CycleDisplay />
-      <TimeDisplay />
-    </div>
+    <InfoDisplayContext.Provider value={{ isPhaseVisible, isTimeVisible }}>
+      <div class="my-6">
+        <SmallScreenInfoDisplay />
+        <PhaseDisplay ref={phaseRef} />
+        <SetDisplay />
+        <CycleDisplay />
+        <TimeDisplay ref={timeRef} />
+      </div>
+    </InfoDisplayContext.Provider>
   )
 }
