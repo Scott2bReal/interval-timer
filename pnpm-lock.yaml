@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@solid-primitives/intersection-observer':
+        specifier: ^2.2.0
+        version: 2.2.0(solid-js@1.9.4)
       solid-icons:
         specifier: ^1.1.0
         version: 1.1.0(solid-js@1.9.4)
@@ -497,6 +500,16 @@ packages:
     resolution: {integrity: sha512-5hqO5S3PTEO2E5VjCePxv40gIgyS2KvO7E7/vvC/NbIW4SIRamkMr1hqj+5Y67fbBWv/bQLB6KelBQmXlyCjWA==}
     cpu: [x64]
     os: [win32]
+
+  '@solid-primitives/intersection-observer@2.2.0':
+    resolution: {integrity: sha512-Y0+1PpK0s5kvQT/0OUHWD39GPuELSke2YxXdTRADyN+KaBgDwBAjIwfVWfv3cCDP65VDlt0Cn1PHCYyqNzdirw==}
+    peerDependencies:
+      solid-js: ^1.6.12
+
+  '@solid-primitives/utils@6.3.0':
+    resolution: {integrity: sha512-e7hTlJ1Ywh2+g/Qug+n4L1mpfxsikoIS4/sHE2EK9WatQt8UJqop/vE6bsLnXlU1xuhb/jo94Ah5Y27rd4wP7A==}
+    peerDependencies:
+      solid-js: ^1.6.12
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2337,6 +2350,15 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.32.0':
     optional: true
+
+  '@solid-primitives/intersection-observer@2.2.0(solid-js@1.9.4)':
+    dependencies:
+      '@solid-primitives/utils': 6.3.0(solid-js@1.9.4)
+      solid-js: 1.9.4
+
+  '@solid-primitives/utils@6.3.0(solid-js@1.9.4)':
+    dependencies:
+      solid-js: 1.9.4
 
   '@types/babel__core@7.20.5':
     dependencies:
