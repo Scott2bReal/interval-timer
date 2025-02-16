@@ -1,4 +1,5 @@
-const myAudioContext = new AudioContext()
+// const audioContext = new AudioContext()
+let audioContext: AudioContext | null = null
 
 export function beep(
   /** The duration of the beep sound in milliseconds. */
@@ -10,8 +11,12 @@ export function beep(
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     try {
-      const oscillatorNode = myAudioContext.createOscillator()
-      const gainNode = myAudioContext.createGain()
+      // Create a new audio context if it doesn't exist
+      if (!audioContext) {
+        audioContext = new AudioContext()
+      }
+      const oscillatorNode = audioContext.createOscillator()
+      const gainNode = audioContext.createGain()
       oscillatorNode.connect(gainNode)
 
       // Set the oscillator frequency in hertz
@@ -19,14 +24,14 @@ export function beep(
 
       // Set the type of oscillator
       oscillatorNode.type = 'sine'
-      gainNode.connect(myAudioContext.destination)
+      gainNode.connect(audioContext.destination)
 
       // Set the gain to the volume
       gainNode.gain.value = volume * 0.01
 
       // Start audio with the desired duration
-      oscillatorNode.start(myAudioContext.currentTime)
-      oscillatorNode.stop(myAudioContext.currentTime + duration * 0.001)
+      oscillatorNode.start(audioContext.currentTime)
+      oscillatorNode.stop(audioContext.currentTime + duration * 0.001)
 
       // Resolve the promise when the sound is finished
       oscillatorNode.onended = () => {
