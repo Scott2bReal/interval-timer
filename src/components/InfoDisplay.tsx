@@ -1,13 +1,9 @@
 import { createVisibilityObserver } from '@solid-primitives/intersection-observer'
-import { Accessor, Component, createContext, Show, useContext } from 'solid-js'
+import { Component, Show, useContext } from 'solid-js'
+import { InfoDisplayContext } from '../context/InfoDisplayContext'
 import { useTimer } from '../context/TimerProvider'
 import { Phase } from '../stores/createTimerStore'
 
-interface ContextValue {
-  isPhaseVisible: Accessor<boolean>
-  isTimeVisible: Accessor<boolean>
-}
-const InfoDisplayContext = createContext<ContextValue>()
 const useInfoDisplayContext = () => {
   const ctx = useContext(InfoDisplayContext)
   if (!ctx)
@@ -91,17 +87,6 @@ const SmallScreenInfoDisplay = () => {
   )
 }
 
-const useIsPhaseVisible = createVisibilityObserver({
-  threshold: 0.5,
-  initialValue: true,
-})
-const useIsTimeVisible = createVisibilityObserver({
-  threshold: 0.5,
-  // Height of the small screen info display
-  rootMargin: '-50px',
-  initialValue: true,
-})
-
 interface PhaseDisplayProps {
   ref?: HTMLDivElement
 }
@@ -123,6 +108,16 @@ const PhaseDisplay: Component<PhaseDisplayProps> = (props) => {
 }
 
 export const InfoDisplay = () => {
+  const useIsPhaseVisible = createVisibilityObserver({
+    threshold: 0.5,
+    initialValue: true,
+  })
+  const useIsTimeVisible = createVisibilityObserver({
+    threshold: 0.5,
+    rootMargin: '-0.7%',
+    initialValue: true,
+  })
+
   let phaseRef: HTMLDivElement | undefined
   const isPhaseVisible = useIsPhaseVisible(() => phaseRef)
 
