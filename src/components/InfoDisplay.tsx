@@ -49,7 +49,10 @@ function getTextColor(phase: Phase) {
   }
 }
 
-const useIsVisible = createVisibilityObserver({ threshold: 0.5 })
+const useIsVisible = createVisibilityObserver({
+  threshold: 0.5,
+  initialValue: true,
+})
 
 const PhaseDisplay = () => {
   const { timer } = useTimer()
