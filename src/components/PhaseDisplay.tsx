@@ -3,6 +3,7 @@ import { useTimer } from '../context/TimerProvider'
 import { Phase } from '../stores/createTimerStore'
 
 const displayTime = (seconds: number) => {
+  if (seconds <= 0) return '0:00'
   const minutes = Math.floor(seconds / 60)
   const secs = seconds % 60
   return `${minutes}:${secs < 10 ? '0' : ''}${secs}`
