@@ -1,6 +1,6 @@
 import { ComponentProps } from 'solid-js'
 import { TimerProvider } from '../context/TimerProvider'
-import { PhaseDisplay } from './PhaseDisplay'
+import { InfoDisplay } from './InfoDisplay'
 import { TimerConfig } from './TimerConfig'
 import { TimerControls } from './TimerControls'
 
@@ -9,8 +9,8 @@ const Timer = (props: {
 }) => {
   return (
     <TimerProvider initialConfig={props.initialConfig}>
-      <div class="mx-auto max-w-md rounded bg-stone-900 p-6 text-center text-stone-100 shadow-lg">
-        <PhaseDisplay />
+      <div class="mx-auto max-w-md text-center">
+        <InfoDisplay />
         <TimerControls />
         <TimerConfig />
       </div>

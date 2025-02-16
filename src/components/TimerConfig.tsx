@@ -23,7 +23,7 @@ export const TimerConfig = () => {
         <span class="sr-only">{showHideConfigMessage(showConfig())}</span>
       </button>
 
-      <div class="mb-8 mt-12 grid grid-cols-2 gap-4">
+      <div class="mb-8 mt-12 grid grid-cols-2 gap-4 px-4">
         <Show when={showConfig()}>
           <div>
             <label for="sets" class="block text-sm font-medium text-stone-100">

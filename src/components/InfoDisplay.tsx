@@ -1,3 +1,4 @@
+import { createVisibilityObserver } from '@solid-primitives/intersection-observer'
 import { useTimer } from '../context/TimerProvider'
 import { Phase } from '../stores/createTimerStore'
 
@@ -48,11 +49,25 @@ function getTextColor(phase: Phase) {
   }
 }
 
-export const PhaseDisplay = () => {
+const useIsVisible = createVisibilityObserver({ threshold: 0.5 })
+
+const PhaseDisplay = () => {
   const { timer } = useTimer()
+
+  let el: HTMLDivElement | undefined
+  const isVisible = useIsVisible(() => el)
+
   return (
-    <div class="my-6">
-      <div class="">
+    <>
+      <div
+        data-is-main-display-visible={isVisible()}
+        class="fixed left-0 top-0 w-full bg-stone-900 py-2 text-3xl transition-transform duration-300 data-[is-main-display-visible=true]:-translate-y-full"
+      >
+        <span class={getTextColor(timer.state.currentPhase)}>
+          {timer.state.currentPhase.toUpperCase()}
+        </span>
+      </div>
+      <div data-is-visible={isVisible()} ref={el}>
         <h1 class="text-2xl italic">Phase</h1>
         <p class="text-6xl">
           <span class="font-medium">
@@ -62,6 +77,14 @@ export const PhaseDisplay = () => {
           </span>
         </p>
       </div>
+    </>
+  )
+}
+
+export const InfoDisplay = () => {
+  return (
+    <div class="my-6">
+      <PhaseDisplay />
       <SetDisplay />
       <CycleDisplay />
       <TimeDisplay />
