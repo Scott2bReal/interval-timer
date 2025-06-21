@@ -6,8 +6,7 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false,
-    "includes": ["!dist/**", "!node_modules/**"]
+    "ignoreUnknown": false
   },
   "formatter": {
     "enabled": true,
@@ -25,6 +24,10 @@
   "linter": {
     "enabled": true,
     "rules": {
+      "nursery": {
+        "useForComponent": "warn",
+        "noDestructuredProps": "error"
+      },
       "recommended": false,
       "complexity": {
         "noAdjacentSpacesInRegex": "error",
