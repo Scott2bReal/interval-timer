@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "types": "tsc -b --noEmit --pretty",
     "lint": "biome lint",
-    "format:fix": "prettier --write ./src",
+    "format": "biome format",
+    "format:fix": "biome format --write",
     "check": "./scripts/check.sh"
   },
   "dependencies": {
@@ -21,9 +22,6 @@
     "@biomejs/biome": "2.0.4",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "prettier": "^3.4.2",
-    "prettier-plugin-organize-imports": "^4.1.0",
-    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.5",

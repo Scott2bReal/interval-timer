@@ -6,7 +6,8 @@
     "useIgnoreFile": false
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["!dist/**", "!node_modules/**"]
   },
   "formatter": {
     "enabled": true,
@@ -97,10 +98,7 @@
         "useNamespaceKeyword": "error"
       }
     },
-    "includes": [
-      "**",
-      "!dist/**"
-    ]
+    "includes": ["**", "!dist/**"]
   },
   "javascript": {
     "formatter": {
@@ -123,12 +121,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.mts",
-        "**/*.cts"
-      ],
+      "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.cts"],
       "linter": {
         "rules": {
           "complexity": {
@@ -163,9 +156,7 @@
       }
     },
     {
-      "includes": [
-        "**/*.{ts,tsx}"
-      ],
+      "includes": ["**/*.{ts,tsx}"],
       "linter": {
         "rules": {}
       }
